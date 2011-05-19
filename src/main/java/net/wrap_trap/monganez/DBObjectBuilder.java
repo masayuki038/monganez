@@ -44,7 +44,7 @@ public class DBObjectBuilder {
 	@SuppressWarnings("unchecked")
 	protected DBObject build(Map map) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(cached.containsKey(map)){
-			return cached.get(map);
+			return null;
 		}
 		
 		DBObject ret = new BasicDBObject();
@@ -62,7 +62,7 @@ public class DBObjectBuilder {
 	@SuppressWarnings("unchecked")
 	protected DBObject build(Iterable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if(cached.containsKey(target)){
-			return cached.get(target);
+			return null;
 		}
 
 		BasicDBList list = new BasicDBList();
@@ -83,7 +83,7 @@ public class DBObjectBuilder {
 	@SuppressWarnings("unchecked")
 	protected DBObject build(Serializable object) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(cached.containsKey(object)){
-			return cached.get(object);
+			return null;
 		}
 		Map nestedMap = PropertyUtils.describe(object);
 		nestedMap.put(CLASS_NAME, object.getClass().getName());
