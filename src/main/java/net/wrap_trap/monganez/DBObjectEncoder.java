@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -25,69 +27,72 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-public class DBObjectBuilder {
+public class DBObjectEncoder {
 	
-	private Map<Object, DBObject> cached = new HashMap<Object, DBObject>();
+	private Set<Object> entries = new HashSet<Object>();
 
 	@SuppressWarnings("unchecked")
-	public DBObject build(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	public DBObject encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(target instanceof Map){
-			return build((Map)target);	
+			return encodeMap((Map)target);	
 		}else if(target instanceof Iterable){
-			return build((Iterable)target);
+			return encodeIterable((Iterable)target);
 		}else if(target instanceof Serializable){
-			return build((Serializable)target);
+			return encodeSerializable((Serializable)target);
 		}
 		throw new RuntimeException(target.getClass().getName() + " is not (java.util.Map||java.util.Iterable||java.io.Serializable).");
 	}
 
 	@SuppressWarnings("unchecked")
-	protected DBObject build(Map map) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
-		if(cached.containsKey(map)){
+	protected DBObject encodeMap(Map map) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		if(entries.contains(map)){
 			return null;
 		}
-		
+		entries.add(map);
 		DBObject ret = new BasicDBObject();
 		for(Object key : map.keySet()){
 			Object target = map.get(key);
 			if(isAcceptableValue(target)){
 				ret.put(key.toString(), target);
 			}else{
-				ret.put(key.toString(), build(target));
+				ret.put(key.toString(), encode(target));
 			}
 		}
 		return ret;
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected DBObject build(Iterable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		if(cached.containsKey(target)){
+	protected DBObject encodeIterable(Iterable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		if(entries.contains(target)){
 			return null;
 		}
+		entries.add(target);
 
 		BasicDBList list = new BasicDBList();
 		for(Object object : (Iterable)target){
 			if(isAcceptableValue(object)){
 				list.add(object);
 			}else{
-				list.add(build(object));
+				list.add(encode(object));
 			}
 		}
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put(COLLECTION_VALUE, list);
 		dbObject.put(COLLECTION_CLASS_NAME, target.getClass().getName());
-		cached.put(target, dbObject);
 		return dbObject;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected DBObject build(Serializable object) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
-		if(cached.containsKey(object)){
+	protected DBObject encodeSerializable(Serializable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		if(entries.contains(target)){
 			return null;
 		}
-		Map nestedMap = PropertyUtils.describe(object);
-		nestedMap.put(CLASS_NAME, object.getClass().getName());
-		return build(nestedMap);	
+		entries.add(target);
+
+		Map nestedMap = PropertyUtils.describe(target);
+		nestedMap.put(CLASS_NAME, target.getClass().getName());
+		DBObject dbObject = encodeMap(nestedMap);
+		return dbObject;	
 	}
 	
 	protected boolean isAcceptableValue(Object val){
