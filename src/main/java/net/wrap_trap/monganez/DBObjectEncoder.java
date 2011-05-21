@@ -25,24 +25,24 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-public class DBObjectBuilder {
+public class DBObjectEncoder {
 	
 	private Map<Object, DBObject> cached = new HashMap<Object, DBObject>();
 
 	@SuppressWarnings("unchecked")
-	public DBObject build(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	public DBObject encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(target instanceof Map){
-			return build((Map)target);	
+			return encodeMap((Map)target);	
 		}else if(target instanceof Iterable){
-			return build((Iterable)target);
+			return encodeIterable((Iterable)target);
 		}else if(target instanceof Serializable){
-			return build((Serializable)target);
+			return encodeSerializable((Serializable)target);
 		}
 		throw new RuntimeException(target.getClass().getName() + " is not (java.util.Map||java.util.Iterable||java.io.Serializable).");
 	}
 
 	@SuppressWarnings("unchecked")
-	protected DBObject build(Map map) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	protected DBObject encodeMap(Map map) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(cached.containsKey(map)){
 			return null;
 		}
@@ -53,14 +53,14 @@ public class DBObjectBuilder {
 			if(isAcceptableValue(target)){
 				ret.put(key.toString(), target);
 			}else{
-				ret.put(key.toString(), build(target));
+				ret.put(key.toString(), encode(target));
 			}
 		}
 		return ret;
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected DBObject build(Iterable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	protected DBObject encodeIterable(Iterable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if(cached.containsKey(target)){
 			return null;
 		}
@@ -70,7 +70,7 @@ public class DBObjectBuilder {
 			if(isAcceptableValue(object)){
 				list.add(object);
 			}else{
-				list.add(build(object));
+				list.add(encode(object));
 			}
 		}
 		BasicDBObject dbObject = new BasicDBObject();
@@ -81,13 +81,13 @@ public class DBObjectBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected DBObject build(Serializable object) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	protected DBObject encodeSerializable(Serializable object) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(cached.containsKey(object)){
 			return null;
 		}
 		Map nestedMap = PropertyUtils.describe(object);
 		nestedMap.put(CLASS_NAME, object.getClass().getName());
-		return build(nestedMap);	
+		return encodeMap(nestedMap);	
 	}
 	
 	protected boolean isAcceptableValue(Object val){

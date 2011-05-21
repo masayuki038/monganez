@@ -17,7 +17,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 
-public class Restorer {
+public class DBObjectDecoder {
 	private Map<Object, DBObject> cached = new HashMap<Object, DBObject>();
 
 	@SuppressWarnings("unchecked")
