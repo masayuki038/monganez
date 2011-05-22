@@ -7,7 +7,6 @@ import static net.wrap_trap.monganez.DBObjectConstants.COLLECTION_VALUE;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
