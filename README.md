@@ -1,5 +1,8 @@
 monganez is MongoDB simple data mapper for Java.
-
+## Usage
+- encode Map/Iterable/POJO to DBObject.
+- decode DBObject to Map/Iterable/POJO.
+show <a href="https://github.com/masayuki038/monganez/tree/master/src/test/java/net/wrap_trap/monganez">deails</a>.
 ## Make Jar
 <pre><code>
 mvn package -Dmaven.test.skip=true
