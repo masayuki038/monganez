@@ -1,4 +1,41 @@
 monganez is MongoDB simple data mapper for Java.
+<pre><code>
+"attributes" : { 
+	"foo" : { 
+		"id" : "1306170379160", 
+		"count" : 40, 
+		"class" : "net.wrap_trap.tomcat.session.Foo",
+		"bar" :null, 
+		"barList" : { "collectionValue" : [
+	        {
+	                "id" : "bar1_1306170379160",
+	                "stringList" : {
+	                        "collectionValue" : [
+	                                "hoge",
+	                                "hogehoge"
+	                        ],
+	                        "collectionClass" : "java.util.ArrayList"
+	                },
+	                "class" : "net.wrap_trap.tomcat.session.Bar"
+	        },
+	        {
+	                "id" : "bar2_1306170379160",
+	                "stringList" : {
+	                        "collectionValue" : [
+	                                "foo",
+	                                "bar",
+	                                "hoge"
+	                        ],
+	                        "collectionClass" : "java.util.ArrayList"
+	                },
+	                "class" : "net.wrap_trap.tomcat.session.Bar"
+	        }
+		], 
+			"collectionClass" : "java.util.ArrayList" } 
+		}
+	}
+}
+</code></pre>
 ## Usage
 - encode Map/Iterable/POJO to DBObject.
 - decode DBObject to Map/Iterable/POJO.
