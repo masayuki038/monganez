@@ -13,6 +13,19 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>wrap-trap.net/maven2</id>
+      <name>wrap-trap.net Maven Repository</name>
+      <url>http://wrap-trap.net/maven2</url>
+    </repository>
+    <repository>
+      <id>wrap-trap.net/maven2/snapshot</id>
+      <name>wrap-trap.net Maven Snapshot Repository</name>
+      <url>http://wrap-trap.net/maven2/snapshot</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -60,4 +73,19 @@
   </dependencies>
   <modules>
   </modules>
+  
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>wrap-trap.net/maven2</id>
+      <name>wrap-trap.net Maven Repository</name>
+      <url>scp://wrap-trap.net/var/www/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>wrap-trap.net/maven2/snapshot</id>
+      <name>wrap-trap.net Maven Snapshot Repository</name>
+      <url>scp://wrap-trap.net/var/www/maven2/snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
