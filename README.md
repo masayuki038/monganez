@@ -6,8 +6,8 @@ mvn package -Dmaven.test.skip=true
 </code></pre>
 
 ## Maven Repository
-http://wrap-trap.net/maven2/snapshot/net/wrap-trap/monganez/
-Repository Url: http://wrap-trap.net/maven2/snapshot/
+- http://wrap-trap.net/maven2/snapshot/net/wrap-trap/monganez/
+- Repository Url: http://wrap-trap.net/maven2/snapshot/
 
 ## License
 
