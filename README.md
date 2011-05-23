@@ -12,7 +12,7 @@ mvn package -Dmaven.test.skip=true
 &lt;dependency&gt;
 		&lt;groupId&gt;net.wrap-trap&lt;/groupId&gt;
 		&lt;artifactId&gt;monganez&lt;/artifactId&gt;
-		&lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;		
+		&lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
 		&lt;type&gt;jar&lt;/type&gt;
 		&lt;scope&gt;compile&lt;/scope&gt;
 &lt;/dependency&gt;
