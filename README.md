@@ -22,6 +22,7 @@ mvn package -Dmaven.test.skip=true
 		&lt;url&gt;http://wrap-trap.net/maven2/snapshot&lt;/url&gt;
 &lt;/repository&gt;
 </code></pre>
+
 ## License
 
 ASL 2.0
