@@ -17,18 +17,18 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
 public class DecodeObjectTest {
-	private DBObjectDecoder decoder;
+	private BSONObjectMapper decoder;
 	
 	@Before
 	public void setUp(){
-		decoder = new DBObjectDecoder();
+		decoder = new BSONObjectMapper();
 	}
 
 	@Test
 	public void testNullValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("nullValue", null);
-		dbObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 		EntityObject entityObject = (EntityObject)decoder.toObject(dbObject);
 		assertThat(entityObject.getNullValue(), is(nullValue()));
 	}
@@ -37,7 +37,7 @@ public class DecodeObjectTest {
 	public void testStringValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("stringValue", "bar");
-		dbObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 		EntityObject entityObject = (EntityObject)decoder.toObject(dbObject);
 		assertThat(entityObject.getStringValue(), is("bar"));				
 	}
@@ -54,7 +54,7 @@ public class DecodeObjectTest {
 		dbObject.put("longDecimalValue", BigDecimal.valueOf(Long.MAX_VALUE));
 		dbObject.put("doubleDecimalValue", BigDecimal.valueOf(Double.MAX_VALUE));
 
-		dbObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 		EntityObject entityObject = (EntityObject)decoder.toObject(dbObject);
 
 		assertThat(entityObject.getShortValue(), is(Short.MAX_VALUE));
@@ -71,7 +71,7 @@ public class DecodeObjectTest {
 	public void testArray() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("objectArray", new Object[]{"abc", 1});
-		dbObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 		EntityObject entityObject = (EntityObject)decoder.toObject(dbObject);
 
 		assertThat(dbObject.get("objectArray"), instanceOf(Object[].class));
@@ -80,18 +80,18 @@ public class DecodeObjectTest {
 		assertThat((Integer)array[1], is(1));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testCollection() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
 		BasicDBObject dbObject = new BasicDBObject();
 		BasicDBList dbList = new BasicDBList();
 		dbList.add(1);
 		dbList.add(2);
 		BasicDBObject dbNestedObject = new BasicDBObject();
-		dbNestedObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbNestedObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);		
+		dbNestedObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbNestedObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);		
 		dbObject.put("integerList", dbNestedObject);
-		dbObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 
 		EntityObject entityObject = (EntityObject)decoder.toObject(dbObject);
 
@@ -108,9 +108,9 @@ public class DecodeObjectTest {
 		dbNestedObject.put("id", now.getTime());
 		dbNestedObject.put("stringValue", "foo");
 		dbNestedObject.put("created", now);
-		dbNestedObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbNestedObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 		dbObject.put("entity", dbNestedObject);
-		dbObject.put(DBObjectConstants.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
+		dbObject.put(BSONObjectMapper.CLASS_NAME, "net.wrap_trap.monganez.EntityObject");	
 		
 		EntityObject entityObject = (EntityObject)decoder.toObject(dbObject);
 		

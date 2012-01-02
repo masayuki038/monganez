@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.*;
 import static org.hamcrest.core.IsInstanceOf.*;
 import static org.hamcrest.core.IsNull.*;
-import static net.wrap_trap.monganez.DBObjectConstants.*;
+import static net.wrap_trap.monganez.BSONObjectMapper.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -12,47 +12,48 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.BSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.DBObject;
-
 public class EncodeIterableTest {
 
-	private DBObjectEncoder encoder;
+	private BSONObjectMapper encoder;
 	
 	@Before
 	public void setUp(){
-		encoder = new DBObjectEncoder();
+		encoder = new BSONObjectMapper();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testNullValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		List<Object> list = new ArrayList<Object>();
 		list.add(null);
 
-		DBObject dbObject = encoder.encode(list);
-		BasicDBList dbList = (BasicDBList)dbObject.get(COLLECTION_VALUE);
+		BSONObject object = encoder.encode(list);
+		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
 
-		assertThat(dbList.size(), is(1));
-		assertThat(dbList.get(0), is(nullValue()));
+		assertThat(encodedList.size(), is(1));
+		assertThat(encodedList.get(0), is(nullValue()));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testStringValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		List<String> list = new ArrayList<String>();
 		list.add("bar");
 		list.add("");
 
-		DBObject dbObject = encoder.encode(list);
-		BasicDBList dbList = (BasicDBList)dbObject.get(COLLECTION_VALUE);
+		BSONObject object = encoder.encode(list);
+		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
 
-		assertThat(dbList.size(), is(2));
-		assertThat((String)dbList.get(0), is("bar"));
-		assertThat((String)dbList.get(1), is(""));
+		assertThat(encodedList.size(), is(2));
+		assertThat((String)encodedList.get(0), is("bar"));
+		assertThat((String)encodedList.get(1), is(""));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testNumber() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		List<Object> list = new ArrayList<Object>();
@@ -65,34 +66,36 @@ public class EncodeIterableTest {
 		list.add(BigDecimal.valueOf(Long.MAX_VALUE));
 		list.add(BigDecimal.valueOf(Double.MAX_VALUE));
 
-		DBObject dbObject = encoder.encode(list);
-		BasicDBList dbList = (BasicDBList)dbObject.get(COLLECTION_VALUE);
+		BSONObject object = encoder.encode(list);
+		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
 
-		assertThat(dbList.size(), is(8));
-		assertThat((Short)dbList.get(0), is(Short.MAX_VALUE));
-		assertThat((Byte)dbList.get(1), is(Byte.MAX_VALUE));
-		assertThat((Integer)dbList.get(2), is(Integer.MAX_VALUE));
-		assertThat((Long)dbList.get(3), is(Long.MAX_VALUE));
-		assertThat((Double)dbList.get(4), is(Double.MAX_VALUE));
-		assertThat((Float)dbList.get(5), is(Float.MAX_VALUE));
-		assertThat(((BigDecimal)dbList.get(6)).longValue(), is(Long.MAX_VALUE));
-		assertThat(((BigDecimal)dbList.get(7)).doubleValue(), is(Double.MAX_VALUE));
+		assertThat(encodedList.size(), is(8));
+		assertThat((Short)encodedList.get(0), is(Short.MAX_VALUE));
+		assertThat((Byte)encodedList.get(1), is(Byte.MAX_VALUE));
+		assertThat((Integer)encodedList.get(2), is(Integer.MAX_VALUE));
+		assertThat((Long)encodedList.get(3), is(Long.MAX_VALUE));
+		assertThat((Double)encodedList.get(4), is(Double.MAX_VALUE));
+		assertThat((Float)encodedList.get(5), is(Float.MAX_VALUE));
+		assertThat(((BigDecimal)encodedList.get(6)).longValue(), is(Long.MAX_VALUE));
+		assertThat(((BigDecimal)encodedList.get(7)).doubleValue(), is(Double.MAX_VALUE));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testArray() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		List<Object> list = new ArrayList<Object>();
 		list.add(new Object[]{"abc", 1});
 		
-		DBObject dbObject = encoder.encode(list);
-		BasicDBList dbList = (BasicDBList)dbObject.get(COLLECTION_VALUE);
+		BSONObject object = encoder.encode(list);
+		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
 
-		assertThat(dbList.size(), is(1));
-		Object[] array = (Object[])dbList.get(0);
+		assertThat(encodedList.size(), is(1));
+		Object[] array = (Object[])encodedList.get(0);
 		assertThat((String)array[0], is("abc"));
 		assertThat((Integer)array[1], is(1));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testCollection() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		List<Object> list = new ArrayList<Object>();
@@ -101,21 +104,22 @@ public class EncodeIterableTest {
 		nestedList.add(2);
 		list.add(nestedList);
 
-		DBObject dbObject = encoder.encode(list);
-		BasicDBList dbList = (BasicDBList)dbObject.get(COLLECTION_VALUE);
+		BSONObject object = encoder.encode(list);
+		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
 
-		assertThat(dbList.get(0), instanceOf(DBObject.class));
-		DBObject listObject = (DBObject)dbList.get(0);
-		assertThat(listObject.containsField(DBObjectConstants.COLLECTION_CLASS_NAME), is(true));
-		assertThat((String)listObject.get(DBObjectConstants.COLLECTION_CLASS_NAME), is(java.util.ArrayList.class.getName()));
-		assertThat(listObject.containsField(DBObjectConstants.COLLECTION_VALUE), is(true));
+		assertThat(encodedList.get(0), instanceOf(BSONObject.class));
+		BSONObject listObject = (BSONObject)encodedList.get(0);
+		assertThat(listObject.containsField(COLLECTION_CLASS_NAME), is(true));
+		assertThat((String)listObject.get(COLLECTION_CLASS_NAME), is(java.util.ArrayList.class.getName()));
+		assertThat(listObject.containsField(COLLECTION_VALUE), is(true));
 		
-		assertThat(listObject.get(DBObjectConstants.COLLECTION_VALUE), instanceOf(BasicDBList.class));
-		BasicDBList dbNestedList = (BasicDBList)listObject.get(DBObjectConstants.COLLECTION_VALUE);
-		assertThat((Integer)dbNestedList.get(0), is(1));
-		assertThat((Integer)dbNestedList.get(1), is(2));
+		assertThat(listObject.get(COLLECTION_VALUE), instanceOf(List.class));
+		List<Object> encodedNestedList = (List<Object>)listObject.get(COLLECTION_VALUE);
+		assertThat((Integer)encodedNestedList.get(0), is(1));
+		assertThat((Integer)encodedNestedList.get(1), is(2));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testObject() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		List<EntityObject> list = new ArrayList<EntityObject>();
@@ -126,15 +130,15 @@ public class EncodeIterableTest {
 		entityObject.setCreated(now);
 		list.add(entityObject);
 
-		DBObject dbObject = encoder.encode(list);
-		BasicDBList dbList = (BasicDBList)dbObject.get(COLLECTION_VALUE);
+		BSONObject object = encoder.encode(list);
+		List<Object> encodedist = (List<Object>)object.get(COLLECTION_VALUE);
 
-		assertThat(dbList.get(0), instanceOf(DBObject.class));
-		DBObject dbEntityObject = (DBObject)dbList.get(0);
-		assertThat(dbEntityObject.containsField(DBObjectConstants.CLASS_NAME), is(true));
-		assertThat((String)dbEntityObject.get(DBObjectConstants.CLASS_NAME), is(EntityObject.class.getName()));
-		assertThat((Long)dbEntityObject.get("id"), is(now.getTime()));
-		assertThat((String)dbEntityObject.get("stringValue"), is("foo"));
-		assertThat((Date)dbEntityObject.get("created"), is(now));
+		assertThat(encodedist.get(0), instanceOf(BSONObject.class));
+		BSONObject encodedEntityObject = (BSONObject)encodedist.get(0);
+		assertThat(encodedEntityObject.containsField(CLASS_NAME), is(true));
+		assertThat((String)encodedEntityObject.get(CLASS_NAME), is(EntityObject.class.getName()));
+		assertThat((Long)encodedEntityObject.get("id"), is(now.getTime()));
+		assertThat((String)encodedEntityObject.get("stringValue"), is("foo"));
+		assertThat((Date)encodedEntityObject.get("created"), is(now));
 	}
 }
