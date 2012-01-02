@@ -17,10 +17,14 @@ import org.apache.commons.beanutils.PropertyUtils;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 
+/**
+ * @Deprecated Use ObjectMappter 
+ */
+@Deprecated
 public class DBObjectDecoder {
 	private Map<Object, DBObject> cached = new HashMap<Object, DBObject>();
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map toMap(DBObject target) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(cached.containsKey(target)){
 			return (Map)cached.get(target);
@@ -45,7 +49,7 @@ public class DBObjectDecoder {
 		return map;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection toCollection(DBObject target) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if(cached.containsKey(target)){
 			return (Collection)cached.get(target);
@@ -71,7 +75,7 @@ public class DBObjectDecoder {
 		return collection;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object toObject(DBObject dbObject) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
 		Map restoredMap = toMap((DBObject)dbObject);
 		if(restoredMap.containsKey(CLASS_NAME)){

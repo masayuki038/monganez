@@ -1,5 +1,9 @@
 package net.wrap_trap.monganez;
 
+/**
+ * @Deprecated Use ObjectMappter 
+ */
+@Deprecated
 public interface DBObjectConstants {
 	
 	/** CLASS_NAME */

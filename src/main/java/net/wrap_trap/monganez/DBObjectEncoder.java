@@ -26,11 +26,15 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+/**
+ * @Deprecated Use ObjectMappter 
+ */
+@Deprecated
 public class DBObjectEncoder {
 	
 	private Set<Object> entries = new HashSet<Object>();
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public DBObject encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(target instanceof Map){
 			return encodeMap((Map)target);	
@@ -42,7 +46,7 @@ public class DBObjectEncoder {
 		throw new RuntimeException(target.getClass().getName() + " is not (java.util.Map||java.util.Iterable||java.io.Serializable).");
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected DBObject encodeMap(Map map) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(entries.contains(map)){
 			return null;
@@ -60,7 +64,7 @@ public class DBObjectEncoder {
 		return ret;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected DBObject encodeIterable(Iterable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if(entries.contains(target)){
 			return null;
@@ -81,7 +85,7 @@ public class DBObjectEncoder {
 		return dbObject;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected DBObject encodeSerializable(Serializable target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(entries.contains(target)){
 			return null;

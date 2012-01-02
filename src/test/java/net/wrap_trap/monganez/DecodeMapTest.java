@@ -19,15 +19,15 @@ import com.mongodb.BasicDBObject;
 
 public class DecodeMapTest {
 	
-	private DBObjectDecoder decoder;
+	private BSONObjectMapper decoder;
 	
 	@Before
 	public void setUp(){
-		decoder = new DBObjectDecoder();
+		decoder = new BSONObjectMapper();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testNullValue() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("null", null);
@@ -35,8 +35,8 @@ public class DecodeMapTest {
 		assertThat(map.get("null"), is(nullValue()));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testStringValue() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("foo", "bar");
@@ -46,8 +46,8 @@ public class DecodeMapTest {
 		assertThat((String)map.get("empty"), is(""));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testNumber() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("short", Short.MAX_VALUE);
@@ -71,8 +71,8 @@ public class DecodeMapTest {
 		assertThat(((BigDecimal)map.get("decimal(double)")).doubleValue(), is(Double.MAX_VALUE));		
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testArray() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBObject dbObject = new BasicDBObject();
 		dbObject.put("2 elements", new Object[]{"abc", 1});
@@ -84,7 +84,7 @@ public class DecodeMapTest {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void testCollection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBObject dbObject = new BasicDBObject();
 		List<Integer> list = new ArrayList<Integer>();
@@ -100,8 +100,8 @@ public class DecodeMapTest {
 		assertThat((Integer)restoredList.get(1), is(2));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testObject() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBObject dbObject = new BasicDBObject();
 		Date now = new Date();
@@ -119,6 +119,4 @@ public class DecodeMapTest {
 		assertThat(dbEntityObject.getStringValue(), is("foo"));
 		assertThat(dbEntityObject.getCreated(), is(now));
 	}
-	
-	
 }

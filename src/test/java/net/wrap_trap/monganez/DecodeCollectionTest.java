@@ -18,21 +18,21 @@ import com.mongodb.BasicDBObject;
 
 public class DecodeCollectionTest {
 
-	private DBObjectDecoder decoder;
+	private BSONObjectMapper decoder;
 	
 	@Before
 	public void setUp(){
-		decoder = new DBObjectDecoder();
+		decoder = new BSONObjectMapper();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testNullValue() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBList dbList = new BasicDBList();
 		dbList.add(null);
 		BasicDBObject dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);
 
 		List list = (List)decoder.toCollection(dbObject);
 
@@ -41,14 +41,14 @@ public class DecodeCollectionTest {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void testStringValue() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBList dbList = new BasicDBList();
 		dbList.add("bar");
 		dbList.add("");
 		BasicDBObject dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);
 
 		List list = (List)decoder.toCollection(dbObject);
 	
@@ -57,8 +57,8 @@ public class DecodeCollectionTest {
 		assertThat((String)list.get(1), is(""));	
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testNumber() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBList dbList = new BasicDBList();
 		dbList.add(Short.MAX_VALUE);
@@ -70,8 +70,8 @@ public class DecodeCollectionTest {
 		dbList.add(BigDecimal.valueOf(Long.MAX_VALUE));
 		dbList.add(BigDecimal.valueOf(Double.MAX_VALUE));
 		BasicDBObject dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);
 
 		List list = (List)decoder.toCollection(dbObject);
 
@@ -85,14 +85,14 @@ public class DecodeCollectionTest {
 		assertThat(((BigDecimal)list.get(7)).doubleValue(), is(Double.MAX_VALUE));			
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testArray() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBList dbList = new BasicDBList();
 		dbList.add(new Object[]{"abc", 1});
 		BasicDBObject dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);
 	
 		List list = (List)decoder.toCollection(dbObject);
 		
@@ -103,20 +103,20 @@ public class DecodeCollectionTest {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void testCollection() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
 		BasicDBList dbList = new BasicDBList();
 		BasicDBList dbNestedList = new BasicDBList();
 		dbNestedList.add(1);
 		dbNestedList.add(2);
 		BasicDBObject dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbNestedList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbNestedList);
 		dbList.add(dbObject);
 		
 		dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);
 		
 		List list = (List)decoder.toCollection(dbObject);
 
@@ -127,7 +127,7 @@ public class DecodeCollectionTest {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void testObject() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		BasicDBList dbList = new BasicDBList();
 		Date now = new Date();
@@ -138,8 +138,8 @@ public class DecodeCollectionTest {
 		dbList.add(entityObject);
 
 		BasicDBObject dbObject = new BasicDBObject();		
-		dbObject.put(DBObjectConstants.COLLECTION_CLASS_NAME, "java.util.ArrayList");
-		dbObject.put(DBObjectConstants.COLLECTION_VALUE, dbList);
+		dbObject.put(BSONObjectMapper.COLLECTION_CLASS_NAME, "java.util.ArrayList");
+		dbObject.put(BSONObjectMapper.COLLECTION_VALUE, dbList);
 		
 		List list = (List)decoder.toCollection(dbObject);
 
