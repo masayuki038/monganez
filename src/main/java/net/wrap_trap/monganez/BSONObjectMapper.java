@@ -46,9 +46,16 @@ public class BSONObjectMapper {
 	public BSONObjectMapper(BSONObjectFactory factory){
 		this.factory = factory;
 	}
+	
+	public Object encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		if(isAcceptableValue(target)){
+			return target;
+		}
+		return encodeInternal(target);
+	}
 
 	@SuppressWarnings("rawtypes")
-	public BSONObject encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	protected BSONObject encodeInternal(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(target instanceof Map){
 			return encodeMap((Map)target);	
 		}else if(target instanceof Iterable){

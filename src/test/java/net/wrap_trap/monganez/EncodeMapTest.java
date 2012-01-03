@@ -31,8 +31,12 @@ public class EncodeMapTest {
 	public void testNullValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("null", null);
-		BSONObject object = encoder.encode(map);
-		assertThat(object.get("null"), is(nullValue()));
+
+		Object object = encoder.encode(map);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+
+		assertThat(bson.get("null"), is(nullValue()));
 	}
 	
 	@Test
@@ -40,9 +44,13 @@ public class EncodeMapTest {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("foo", "bar");
 		map.put("empty", "");
-		BSONObject object = encoder.encode(map);
-		assertThat((String)object.get("foo"), is("bar"));
-		assertThat((String)object.get("empty"), is(""));
+
+		Object object = encoder.encode(map);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		
+		assertThat((String)bson.get("foo"), is("bar"));
+		assertThat((String)bson.get("empty"), is(""));
 	}
 
 	@Test
@@ -57,24 +65,31 @@ public class EncodeMapTest {
 		map.put("decimal(long)", BigDecimal.valueOf(Long.MAX_VALUE));
 		map.put("decimal(double)", BigDecimal.valueOf(Double.MAX_VALUE));
 
-		BSONObject object = encoder.encode(map);
-		assertThat((Short)object.get("short"), is(Short.MAX_VALUE));
-		assertThat((Byte)object.get("byte"), is(Byte.MAX_VALUE));
-		assertThat((Integer)object.get("int"), is(Integer.MAX_VALUE));
-		assertThat((Long)object.get("long"), is(Long.MAX_VALUE));
-		assertThat((Double)object.get("double"), is(Double.MAX_VALUE));
-		assertThat((Float)object.get("float"), is(Float.MAX_VALUE));
-		assertThat(((BigDecimal)object.get("decimal(long)")).longValue(), is(Long.MAX_VALUE));
-		assertThat(((BigDecimal)object.get("decimal(double)")).doubleValue(), is(Double.MAX_VALUE));
+		Object object = encoder.encode(map);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+
+		assertThat((Short)bson.get("short"), is(Short.MAX_VALUE));
+		assertThat((Byte)bson.get("byte"), is(Byte.MAX_VALUE));
+		assertThat((Integer)bson.get("int"), is(Integer.MAX_VALUE));
+		assertThat((Long)bson.get("long"), is(Long.MAX_VALUE));
+		assertThat((Double)bson.get("double"), is(Double.MAX_VALUE));
+		assertThat((Float)bson.get("float"), is(Float.MAX_VALUE));
+		assertThat(((BigDecimal)bson.get("decimal(long)")).longValue(), is(Long.MAX_VALUE));
+		assertThat(((BigDecimal)bson.get("decimal(double)")).doubleValue(), is(Double.MAX_VALUE));
 	}
 
 	@Test
 	public void testArray() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		Map<String, Object[]> map = new HashMap<String, Object[]>();
 		map.put("2 elements", new Object[]{"abc", 1});
-		BSONObject object = encoder.encode(map);
-		assertThat(object.get("2 elements"), instanceOf(Object[].class));
-		Object[] array = (Object[])object.get("2 elements");
+
+		Object object = encoder.encode(map);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+
+		assertThat(bson.get("2 elements"), instanceOf(Object[].class));
+		Object[] array = (Object[])bson.get("2 elements");
 		assertThat((String)array[0], is("abc"));
 		assertThat((Integer)array[1], is(1));
 	}
@@ -87,10 +102,13 @@ public class EncodeMapTest {
 		list.add(1);
 		list.add(2);
 		map.put("list", list);
-		BSONObject object = encoder.encode(map);
+		
+		Object object = encoder.encode(map);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
 
-		assertThat(object.get("list"), instanceOf(BSONObject.class));
-		BSONObject listObject = (BSONObject)object.get("list");
+		assertThat(bson.get("list"), instanceOf(BSONObject.class));
+		BSONObject listObject = (BSONObject)bson.get("list");
 		assertThat(listObject.containsField(BSONObjectMapper.COLLECTION_CLASS_NAME), is(true));
 		assertThat((String)listObject.get(BSONObjectMapper.COLLECTION_CLASS_NAME), is(java.util.ArrayList.class.getName()));
 		assertThat(listObject.containsField(BSONObjectMapper.COLLECTION_VALUE), is(true));
@@ -110,10 +128,13 @@ public class EncodeMapTest {
 		entityObject.setStringValue("foo");
 		entityObject.setCreated(now);
 		map.put("entity", entityObject);
-		BSONObject object = encoder.encode(map);
 
-		assertThat(object.get("entity"), instanceOf(BSONObject.class));
-		BSONObject encodedEntityObject = (BSONObject)object.get("entity");
+		Object object = encoder.encode(map);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+
+		assertThat(bson.get("entity"), instanceOf(BSONObject.class));
+		BSONObject encodedEntityObject = (BSONObject)bson.get("entity");
 		assertThat(encodedEntityObject.containsField(BSONObjectMapper.CLASS_NAME), is(true));
 		assertThat((String)encodedEntityObject.get(BSONObjectMapper.CLASS_NAME), is(EntityObject.class.getName()));
 		assertThat((Long)encodedEntityObject.get("id"), is(now.getTime()));

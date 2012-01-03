@@ -29,16 +29,24 @@ public class EncodeObjectTest {
 	public void testNullValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		EntityObject entityObject = new EntityObject();
 		entityObject.setNullValue(null);
-		BSONObject object = encoder.encode(entityObject);
-		assertThat(object.get("nullValue"), is(nullValue()));
+
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		
+		assertThat(bson.get("nullValue"), is(nullValue()));
 	}
 	
 	@Test
 	public void testStringValue() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		EntityObject entityObject = new EntityObject();
 		entityObject.setStringValue("bar");		
-		BSONObject object = encoder.encode(entityObject);
-		assertThat((String)object.get("stringValue"), is("bar"));
+
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+
+		assertThat((String)bson.get("stringValue"), is("bar"));
 	}
 
 	@Test
@@ -53,16 +61,18 @@ public class EncodeObjectTest {
 		entityObject.setLongDecimalValue(BigDecimal.valueOf(Long.MAX_VALUE));
 		entityObject.setDoubleDecimalValue(BigDecimal.valueOf(Double.MAX_VALUE));
 		
-		BSONObject object = encoder.encode(entityObject);
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
 
-		assertThat((Short)object.get("shortValue"), is(Short.MAX_VALUE));
-		assertThat((Byte)object.get("byteValue"), is(Byte.MAX_VALUE));
-		assertThat((Integer)object.get("integerValue"), is(Integer.MAX_VALUE));
-		assertThat((Long)object.get("longValue"), is(Long.MAX_VALUE));
-		assertThat((Double)object.get("doubleValue"), is(Double.MAX_VALUE));
-		assertThat((Float)object.get("floatValue"), is(Float.MAX_VALUE));
-		assertThat(((BigDecimal)object.get("longDecimalValue")).longValue(), is(Long.MAX_VALUE));
-		assertThat(((BigDecimal)object.get("doubleDecimalValue")).doubleValue(), is(Double.MAX_VALUE));
+		assertThat((Short)bson.get("shortValue"), is(Short.MAX_VALUE));
+		assertThat((Byte)bson.get("byteValue"), is(Byte.MAX_VALUE));
+		assertThat((Integer)bson.get("integerValue"), is(Integer.MAX_VALUE));
+		assertThat((Long)bson.get("longValue"), is(Long.MAX_VALUE));
+		assertThat((Double)bson.get("doubleValue"), is(Double.MAX_VALUE));
+		assertThat((Float)bson.get("floatValue"), is(Float.MAX_VALUE));
+		assertThat(((BigDecimal)bson.get("longDecimalValue")).longValue(), is(Long.MAX_VALUE));
+		assertThat(((BigDecimal)bson.get("doubleDecimalValue")).doubleValue(), is(Double.MAX_VALUE));
 	}
 	
 	@Test
@@ -70,10 +80,12 @@ public class EncodeObjectTest {
 		EntityObject entityObject = new EntityObject();
 		entityObject.setObjectArray(new Object[]{"abc", 1});
 		
-		BSONObject object = encoder.encode(entityObject);
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
 
-		assertThat(object.get("objectArray"), instanceOf(Object[].class));
-		Object[] array = (Object[])object.get("objectArray");
+		assertThat(bson.get("objectArray"), instanceOf(Object[].class));
+		Object[] array = (Object[])bson.get("objectArray");
 		assertThat((String)array[0], is("abc"));
 		assertThat((Integer)array[1], is(1));
 	}
@@ -87,10 +99,12 @@ public class EncodeObjectTest {
 		list.add(2);
 		entityObject.setIntegerList(list);
 
-		BSONObject object = encoder.encode(entityObject);
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
 
-		assertThat(object.get("integerList"), instanceOf(BSONObject.class));
-		BSONObject listObject = (BSONObject)object.get("integerList");
+		assertThat(bson.get("integerList"), instanceOf(BSONObject.class));
+		BSONObject listObject = (BSONObject)bson.get("integerList");
 		assertThat(listObject.containsField(BSONObjectMapper.COLLECTION_CLASS_NAME), is(true));
 		assertThat((String)listObject.get(BSONObjectMapper.COLLECTION_CLASS_NAME), is(java.util.ArrayList.class.getName()));
 		assertThat(listObject.containsField(BSONObjectMapper.COLLECTION_VALUE), is(true));
@@ -111,10 +125,12 @@ public class EncodeObjectTest {
 		entityObject2.setCreated(now);
 		entityObject.setEntity(entityObject2);
 		
-		BSONObject object = encoder.encode(entityObject);
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
 
-		assertThat(object.get("entity"), instanceOf(BSONObject.class));
-		BSONObject encodedEntityObject = (BSONObject)object.get("entity");
+		assertThat(bson.get("entity"), instanceOf(BSONObject.class));
+		BSONObject encodedEntityObject = (BSONObject)bson.get("entity");
 		assertThat(encodedEntityObject.containsField(BSONObjectMapper.CLASS_NAME), is(true));
 		assertThat((String)encodedEntityObject.get(BSONObjectMapper.CLASS_NAME), is(EntityObject.class.getName()));
 		assertThat((Long)encodedEntityObject.get("id"), is(now.getTime()));
@@ -129,9 +145,11 @@ public class EncodeObjectTest {
 		entityObject.setCreated(now);
 		entityObject.setEntity(entityObject);
 		
-		BSONObject object = encoder.encode(entityObject);
+		Object object = encoder.encode(entityObject);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
 		
-		assertThat((Date)object.get("created"), is(now));
-		assertThat(object.get("entity"), is(nullValue()));		
+		assertThat((Date)bson.get("created"), is(now));
+		assertThat(bson.get("entity"), is(nullValue()));		
 	}
 }

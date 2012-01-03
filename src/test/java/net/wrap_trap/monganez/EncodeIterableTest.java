@@ -31,8 +31,10 @@ public class EncodeIterableTest {
 		List<Object> list = new ArrayList<Object>();
 		list.add(null);
 
-		BSONObject object = encoder.encode(list);
-		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
+		Object object = encoder.encode(list);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		List<Object> encodedList = (List<Object>)bson.get(COLLECTION_VALUE);
 
 		assertThat(encodedList.size(), is(1));
 		assertThat(encodedList.get(0), is(nullValue()));
@@ -45,8 +47,10 @@ public class EncodeIterableTest {
 		list.add("bar");
 		list.add("");
 
-		BSONObject object = encoder.encode(list);
-		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
+		Object object = encoder.encode(list);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		List<Object> encodedList = (List<Object>)bson.get(COLLECTION_VALUE);
 
 		assertThat(encodedList.size(), is(2));
 		assertThat((String)encodedList.get(0), is("bar"));
@@ -66,8 +70,10 @@ public class EncodeIterableTest {
 		list.add(BigDecimal.valueOf(Long.MAX_VALUE));
 		list.add(BigDecimal.valueOf(Double.MAX_VALUE));
 
-		BSONObject object = encoder.encode(list);
-		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
+		Object object = encoder.encode(list);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		List<Object> encodedList = (List<Object>)bson.get(COLLECTION_VALUE);
 
 		assertThat(encodedList.size(), is(8));
 		assertThat((Short)encodedList.get(0), is(Short.MAX_VALUE));
@@ -86,8 +92,10 @@ public class EncodeIterableTest {
 		List<Object> list = new ArrayList<Object>();
 		list.add(new Object[]{"abc", 1});
 		
-		BSONObject object = encoder.encode(list);
-		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
+		Object object = encoder.encode(list);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		List<Object> encodedList = (List<Object>)bson.get(COLLECTION_VALUE);
 
 		assertThat(encodedList.size(), is(1));
 		Object[] array = (Object[])encodedList.get(0);
@@ -104,8 +112,10 @@ public class EncodeIterableTest {
 		nestedList.add(2);
 		list.add(nestedList);
 
-		BSONObject object = encoder.encode(list);
-		List<Object> encodedList = (List<Object>)object.get(COLLECTION_VALUE);
+		Object object = encoder.encode(list);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		List<Object> encodedList = (List<Object>)bson.get(COLLECTION_VALUE);
 
 		assertThat(encodedList.get(0), instanceOf(BSONObject.class));
 		BSONObject listObject = (BSONObject)encodedList.get(0);
@@ -130,8 +140,10 @@ public class EncodeIterableTest {
 		entityObject.setCreated(now);
 		list.add(entityObject);
 
-		BSONObject object = encoder.encode(list);
-		List<Object> encodedist = (List<Object>)object.get(COLLECTION_VALUE);
+		Object object = encoder.encode(list);
+		assertThat(object, is(BSONObject.class));
+		BSONObject bson = (BSONObject)object;
+		List<Object> encodedist = (List<Object>)bson.get(COLLECTION_VALUE);
 
 		assertThat(encodedist.get(0), instanceOf(BSONObject.class));
 		BSONObject encodedEntityObject = (BSONObject)encodedist.get(0);
