@@ -47,6 +47,12 @@ public class BSONObjectMapper {
 		this.factory = factory;
 	}
 	
+	public BSONObject createBSONObject(String key, Object value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		BSONObject bson = factory.createBSONObject();
+		bson.put(key, encode(value));
+		return bson;
+	}
+	
 	public Object encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(isAcceptableValue(target)){
 			return target;
