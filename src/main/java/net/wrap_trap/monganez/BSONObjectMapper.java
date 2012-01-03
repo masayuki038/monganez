@@ -22,8 +22,6 @@ import org.bson.types.CodeWScope;
 import org.bson.types.ObjectId;
 import org.bson.types.Symbol;
 
-import com.mongodb.BasicDBList;
-
 public class BSONObjectMapper {
 
 	/** CLASS_NAME */
@@ -163,7 +161,7 @@ public class BSONObjectMapper {
 			return (Collection)cached.get(target);
 		}
 		List<Object> list = new ArrayList<Object>();
-		for(Object o : (BasicDBList)target.get(COLLECTION_VALUE)){
+		for(Object o : (List<Object>)target.get(COLLECTION_VALUE)){
 			if(o instanceof BSONObject){
 				BSONObject bsonObject = (BSONObject)o;
 				if(bsonObject.containsField(COLLECTION_CLASS_NAME)){
