@@ -15,9 +15,6 @@ import org.bson.BSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.DBObject;
-
 public class EncodeObjectTest {
 
 	
@@ -81,6 +78,7 @@ public class EncodeObjectTest {
 		assertThat((Integer)array[1], is(1));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testCollection() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		EntityObject entityObject = new EntityObject();
