@@ -23,7 +23,6 @@ import org.bson.types.ObjectId;
 import org.bson.types.Symbol;
 
 import com.mongodb.BasicDBList;
-import com.mongodb.DBObject;
 
 public class BSONObjectMapper {
 
@@ -34,7 +33,7 @@ public class BSONObjectMapper {
 	/** COLLECTION_VALUE */
 	public static final String COLLECTION_VALUE = "collectionValue";
 
-	private Map<Object, DBObject> cached = new HashMap<Object, DBObject>();
+	private Map<Object, BSONObject> cached = new HashMap<Object, BSONObject>();
 
 	private Set<Object> entries = new HashSet<Object>();
 	
@@ -142,13 +141,13 @@ public class BSONObjectMapper {
 		Map map = new HashMap();
 		for(String key : target.keySet()){
 			Object value = target.get(key);
-			if(value instanceof DBObject){
-				DBObject dbObject = (DBObject)value;
-				if(dbObject.containsField(COLLECTION_CLASS_NAME)){
-					Collection restoredCollection = toCollection(dbObject);
+			if(value instanceof BSONObject){
+				BSONObject bsonObject = (BSONObject)value;
+				if(bsonObject.containsField(COLLECTION_CLASS_NAME)){
+					Collection restoredCollection = toCollection(bsonObject);
 					map.put(key, restoredCollection);
 				}else{
-					Object object = toObject((DBObject)value);
+					Object object = toObject((BSONObject)value);
 					map.put(key, object);
 				}
 			}else{
@@ -165,13 +164,13 @@ public class BSONObjectMapper {
 		}
 		List<Object> list = new ArrayList<Object>();
 		for(Object o : (BasicDBList)target.get(COLLECTION_VALUE)){
-			if(o instanceof DBObject){
-				DBObject dbObject = (DBObject)o;
-				if(dbObject.containsField(COLLECTION_CLASS_NAME)){
-					Collection restoredCollection = toCollection(dbObject);
+			if(o instanceof BSONObject){
+				BSONObject bsonObject = (BSONObject)o;
+				if(bsonObject.containsField(COLLECTION_CLASS_NAME)){
+					Collection restoredCollection = toCollection(bsonObject);
 					list.add(restoredCollection);
 				}else{
-					Object object = toObject((DBObject)o);
+					Object object = toObject((BSONObject)o);
 					list.add(object);
 				}
 			}else{
@@ -185,8 +184,8 @@ public class BSONObjectMapper {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public Object toObject(BSONObject dbObject) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
-		Map restoredMap = toMap((DBObject)dbObject);
+	public Object toObject(BSONObject bsonObject) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
+		Map restoredMap = toMap((BSONObject)bsonObject);
 		if(restoredMap.containsKey(CLASS_NAME)){
 			String className = (String)restoredMap.get(CLASS_NAME);
 			Class<?> clazz = Class.forName(className);
