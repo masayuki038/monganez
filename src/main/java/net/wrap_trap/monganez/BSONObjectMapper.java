@@ -31,8 +31,6 @@ public class BSONObjectMapper {
 	/** COLLECTION_VALUE */
 	public static final String COLLECTION_VALUE = "collectionValue";
 
-	private Map<Object, BSONObject> cached = new HashMap<Object, BSONObject>();
-
 	private Set<Object> entries = new HashSet<Object>();
 	
 	private BSONObjectFactory factory = null;
@@ -52,14 +50,15 @@ public class BSONObjectMapper {
 	}
 	
 	public Object encode(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
-		if(isAcceptableValue(target)){
-			return target;
-		}
+		entries.clear();
 		return encodeInternal(target);
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected BSONObject encodeInternal(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	protected Object encodeInternal(Object target) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		if(isAcceptableValue(target)){
+			return target;
+		}
 		if(target instanceof Map){
 			return encodeMap((Map)target);	
 		}else if(target instanceof Iterable){
@@ -82,7 +81,7 @@ public class BSONObjectMapper {
 			if(isAcceptableValue(target)){
 				ret.put(key.toString(), target);
 			}else{
-				ret.put(key.toString(), encode(target));
+				ret.put(key.toString(), encodeInternal(target));
 			}
 		}
 		return ret;
@@ -100,7 +99,7 @@ public class BSONObjectMapper {
 			if(isAcceptableValue(object)){
 				list.add(object);
 			}else{
-				list.add(encode(object));
+				list.add(encodeInternal(object));
 			}
 		}
 		BSONObject bsonObject = factory.createBSONObject();
@@ -145,10 +144,6 @@ public class BSONObjectMapper {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map toMap(BSONObject target) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
-		if(cached.containsKey(target)){
-			return (Map)cached.get(target);
-		}
-		
 		Map map = new HashMap();
 		for(String key : target.keySet()){
 			Object value = target.get(key);
@@ -170,9 +165,6 @@ public class BSONObjectMapper {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Collection toCollection(BSONObject target) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		if(cached.containsKey(target)){
-			return (Collection)cached.get(target);
-		}
 		List<Object> list = new ArrayList<Object>();
 		for(Object o : (List<Object>)target.get(COLLECTION_VALUE)){
 			if(o instanceof BSONObject){
