@@ -93,13 +93,13 @@
       <uniqueVersion>false</uniqueVersion>
       <id>wrap-trap.net/maven2</id>
       <name>wrap-trap.net Maven Repository</name>
-      <url>scp://wrap-trap.net/var/www/maven2</url>
+      <url>scp://wrap-trap.net:3843/var/www/maven2</url>
     </repository>
     <snapshotRepository>
       <uniqueVersion>true</uniqueVersion>
       <id>wrap-trap.net/maven2/snapshot</id>
       <name>wrap-trap.net Maven Snapshot Repository</name>
-      <url>scp://wrap-trap.net/var/www/maven2/snapshot</url>
+      <url>scp://wrap-trap.net:3843/var/www/maven2/snapshot</url>
     </snapshotRepository>
   </distributionManagement>
 </project>
